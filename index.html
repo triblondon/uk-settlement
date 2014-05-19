@@ -1,7 +1,11 @@
 <html>
 <head>
 	<meta charset="utf-8">
+
+	<!-- Load the Grid, Typography, Forms and Colors style modules from Origami -->
 	<link rel='stylesheet' href='http://build.origami.ft.com/bundles/css?modules=o-grid@^2.1.4,o-ft-typography@^1.11.0,o-ft-forms@^0.6.7,o-colors@^2.3.11' />
+
+	<!-- Fix some bugs in Origami forms 0.6.7.  The prefix blocks (in this case, '£' on the income field) don't match the height of the text fields, and additional info doesn't have margins suitable for it to go *under* the field it relates to. -->
 	<style>
 	.o-ft-forms__prefix {
 		max-width: 30px;
@@ -16,20 +20,29 @@
 	.o-ft-forms__additional-info {
 		margin-top: 4px;
 	}
+	.prefixed-field {
+		overflow: hidden;
+	}
 	</style>
 </head>
+
+<!-- Give the page the standard FT page background color -->
 <body class='o-colors-page-background'>
 
 	<form>
 
+	<!-- Even things that are full width should go in a grid row, so that margins match the rows that are split into multiple columns.  Full width generally means the row has only one column, so you can use the same div for the row class and the colspan attribute -->
 	<div class='o-grid-row' data-o-grid-colspan="12">
 		<h1 class='o-ft-typography-title-large'>Could you qualify to stay in the UK as a Tier 1 highly skilled migrant?</h1>
 	</div>
 
+	<!-- Use a grid row for the first form field.  Split into two columns - one for the question and one for the form field.  By default split them in a 5:7 ratio on a single line, but on small screens ('S' prefix) stack them one above the other -->
 	<div class='o-grid-row'>
 		<div data-o-grid-colspan='5 S12' class='o-ft-forms__label'>Which rules do you want to try to qualify under?</div>
 		<div data-o-grid-colspan='7 S12'>
 			<div class="o-ft-forms-field-group">
+
+				<!-- Style the radio buttons using FT forms style - gives a claret coloured dot, and larger, more touchable circles.  Also use labels so that you can click/touch the label as well as the dot.  Matching the ID of the radio input with the 'for' attribute of the label tells the browser which radio button each label relates to -->
 				<input type="radio" name='form_rules' value="2008" class="o-ft-forms__field" id="form_rules_2008"><label for="form_rules_2008" class="o-ft-forms__label"><span class="o-ft-forms__field--pseudo"></span>Rules from Feb 29, 2008 to Mar 30, 2009 (easier)</label><br/>
 				<input type="radio" name='form_rules' value="2010" class="o-ft-forms__field" id="form_rules_2010"><label for="form_rules_2010" class="o-ft-forms__label"><span class="o-ft-forms__field--pseudo"></span>Rules from Jul 10, 2010 to Dec 22, 2010 (harder)</label>
 			</div>
@@ -52,7 +65,9 @@
 		<div data-o-grid-colspan='5 S12' class='o-ft-forms__label'>How much did you earn in the last year?</div>
 		<div data-o-grid-colspan='7 S12'>
 			<div class="o-ft-forms-field-group">
-				<div style='overflow: hidden'>
+
+				<!-- Add a prefix to a text field for the income entry to make it clear that the amount should be in GBP.  Currently this is not working properly in the component and requires a few styles that are embedded into this page, but that should be fixed in a subsequent forms release. -->
+				<div class='prefixed-field'>
 					<span class="o-ft-forms__prefix">£</span>
 					<input type="text" style='max-width: 110px' class="o-ft-forms__field" name='form_income'>
 				</div>
@@ -71,6 +86,7 @@
 		</div>
 	</div>
 
+	<!-- This question was originally 'What age were you in 2009' but that's much harder for someone to work out than the year in which they were born so it's probably easier to ask them that and then figure out the answer you want from that -->
 	<div class='o-grid-row'>
 		<div data-o-grid-colspan='5 S12' class='o-ft-forms__label'>What year were you born?</div>
 		<div data-o-grid-colspan='7 S12'>
