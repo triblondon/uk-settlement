@@ -1,9 +1,130 @@
 <html>
 <head>
-	<link rel='stylesheet' href='http://build.origami.ft.com/bundles/css?modules=o-grid@^2.1.4,o-ft-typography@^1.11.0,o-ft-forms@^0.6.7' />
+	<meta charset="utf-8">
+	<link rel='stylesheet' href='http://build.origami.ft.com/bundles/css?modules=o-grid@^2.1.4,o-ft-typography@^1.11.0,o-ft-forms@^0.6.7,o-colors@^2.3.11' />
+	<style>
+	.o-ft-forms__prefix {
+		max-width: 30px;
+		float: left;
+		line-height: 33px;
+	}
+	.o-ft-forms__prefix + .o-ft-forms__field[type=text] {
+		float:left;
+		border-top-left-radius: 0;
+		border-bottom-left-radius: 0;
+	}
+	.o-ft-forms__additional-info {
+		margin-top: 4px;
+	}
+	</style>
 </head>
-<body>
+<body class='o-colors-page-background'>
 
+	<form>
+
+	<div class='o-grid-row' data-o-grid-colspan="12">
+		<h1 class='o-ft-typography-title-large'>Could you qualify to stay in the UK as a Tier 1 highly skilled migrant?</h1>
+	</div>
+
+	<div class='o-grid-row'>
+		<div data-o-grid-colspan='5 S12' class='o-ft-forms__label'>Which rules do you want to try to qualify under?</div>
+		<div data-o-grid-colspan='7 S12'>
+			<div class="o-ft-forms-field-group">
+				<input type="radio" name='form_rules' value="2008" class="o-ft-forms__field" id="form_rules_2008"><label for="form_rules_2008" class="o-ft-forms__label"><span class="o-ft-forms__field--pseudo"></span>Rules from Feb 29, 2008 to Mar 30, 2009 (easier)</label><br/>
+				<input type="radio" name='form_rules' value="2010" class="o-ft-forms__field" id="form_rules_2010"><label for="form_rules_2010" class="o-ft-forms__label"><span class="o-ft-forms__field--pseudo"></span>Rules from Jul 10, 2010 to Dec 22, 2010 (harder)</label>
+			</div>
+		</div>
+	</div>
+
+	<div class='o-grid-row'>
+		<div data-o-grid-colspan='5 S12' class='o-ft-forms__label'>What is the highest level of further education you have completed?</div>
+		<div data-o-grid-colspan='7 S12'>
+			<div class="o-ft-forms-field-group">
+				<input type="radio" name='form_degree' value="none" class="o-ft-forms__field" id="form_degree_none"><label for="form_degree_none" class="o-ft-forms__label"><span class="o-ft-forms__field--pseudo"></span>None</label>
+				<input type="radio" name='form_degree' value="bachelors" class="o-ft-forms__field" id="form_degree_bachelors"><label for="form_degree_bachelors" class="o-ft-forms__label"><span class="o-ft-forms__field--pseudo"></span>Bachelors degree</label>
+				<input type="radio" name='form_degree' value="masters" class="o-ft-forms__field" id="form_degree_masters"><label for="form_degree_masters" class="o-ft-forms__label"><span class="o-ft-forms__field--pseudo"></span>Masters degree</label>
+				<input type="radio" name='form_degree' value="phd" class="o-ft-forms__field" id="form_degree_phd"><label for="form_degree_phd" class="o-ft-forms__label"><span class="o-ft-forms__field--pseudo"></span>PhD</label>
+			</div>
+		</div>
+	</div>
+
+	<div class='o-grid-row'>
+		<div data-o-grid-colspan='5 S12' class='o-ft-forms__label'>How much did you earn in the last year?</div>
+		<div data-o-grid-colspan='7 S12'>
+			<div class="o-ft-forms-field-group">
+				<div style='overflow: hidden'>
+					<span class="o-ft-forms__prefix">£</span>
+					<input type="text" style='max-width: 110px' class="o-ft-forms__field" name='form_income'>
+				</div>
+				<small class="o-ft-forms__additional-info">Enter a value in pounds sterling.</small>
+			</div>
+		</div>
+	</div>
+
+	<div class='o-grid-row'>
+		<div data-o-grid-colspan='5 S12' class='o-ft-forms__label'>Did you earn at least £16,000 <em>in the UK</em> over the last year?</div>
+		<div data-o-grid-colspan='7 S12'>
+			<div class="o-ft-forms-field-group">
+				<input type="radio" name='form_ukincome' value="Yes" class="o-ft-forms__field" id="form_ukincome_yes"><label for="form_ukincome_yes" class="o-ft-forms__label"><span class="o-ft-forms__field--pseudo"></span>Yes</label>
+				<input type="radio" name='form_ukincome' value="No" class="o-ft-forms__field" id="form_ukincome_no"><label for="form_ukincome_no" class="o-ft-forms__label"><span class="o-ft-forms__field--pseudo"></span>No</label>
+			</div>
+		</div>
+	</div>
+
+	<div class='o-grid-row'>
+		<div data-o-grid-colspan='5 S12' class='o-ft-forms__label'>What year were you born?</div>
+		<div data-o-grid-colspan='7 S12'>
+			<div class="o-ft-forms-field-group">
+				<select class="o-ft-forms__field--select" style='max-width: 150px'>
+				<option></option>
+				<option>2013</option>
+				<option>2012</option>
+				<option>2011</option>
+				<option>2010</option>
+				<option>2009</option>
+				<option>2008</option>
+				<option>2007</option>
+				<option>2006</option>
+				<option>2005</option>
+				<option>2004</option>
+				<option>2003</option>
+				<option>2002</option>
+				<option>2001</option>
+				<option>2000</option>
+				<option>1999</option>
+				<option>1998</option>
+				<option>1997</option>
+				<option>1996</option>
+				<option>1995</option>
+				<option>1994</option>
+				<option>1993</option>
+				<option>1992</option>
+				<option>1991</option>
+				<option>1990</option>
+				<option>1989</option>
+				<option>1988</option>
+				<option>1987</option>
+				<option>1986</option>
+				<option>1985</option>
+				<option>1984</option>
+				<option>1983</option>
+				<option>1982</option>
+				<option>1981</option>
+				<option>1980</option>
+				<option>1979</option>
+				</select>
+			</div>
+		</div>
+	</div>
+
+	</form>
+
+	<div class='o-grid-row' data-o-grid-colspan="12">
+		<h2 class='o-ft-typography-heading3'>Your results</h2>
+		<p class='o-ft-typography-body o-ft-typography-body__block'>
+			Congratulations! Provided you have spent the last five years in the UK, without any significant absences, you'd qualify to stay and settle in the UK!
+		</p>
+	</div>
 
 </body>
 </html>
