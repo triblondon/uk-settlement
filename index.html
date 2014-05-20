@@ -7,23 +7,125 @@
 
 	<!-- Fix some bugs in Origami forms 0.6.7.  The prefix blocks (in this case, '£' on the income field) don't match the height of the text fields, and additional info doesn't have margins suitable for it to go *under* the field it relates to. -->
 	<style>
-	.o-ft-forms__prefix {
-		max-width: 30px;
-		float: left;
-		line-height: 33px;
-	}
-	.o-ft-forms__prefix + .o-ft-forms__field[type=text] {
-		float:left;
-		border-top-left-radius: 0;
-		border-bottom-left-radius: 0;
-	}
-	.o-ft-forms__additional-info {
-		margin-top: 4px;
-	}
-	.prefixed-field {
-		overflow: hidden;
-	}
+		.o-ft-forms__prefix {
+			max-width: 30px;
+			float: left;
+			line-height: 33px;
+		}
+		.o-ft-forms__prefix + .o-ft-forms__field[type=text] {
+			float:left;
+			border-top-left-radius: 0;
+			border-bottom-left-radius: 0;
+		}
+		.o-ft-forms__additional-info {
+			margin-top: 4px;
+		}
+		.prefixed-field {
+			overflow: hidden;
+		}
+
+		.results, .results-msg {
+			display: none;
+		}
 	</style>
+
+	<script src='//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js'></script>
+	<script>
+	$(function() {
+		var rulesets = {
+			r1: {
+				target: 75,
+				points: {
+					degree: { "none":0, "bachelors":30, "masters":35, "phd":50 },
+					income: { "16000":5, "18000":10, "20000":15, "23000":20, "26000":25, "29000":30, "32000":35, "35000":40, "40000":45 },
+					ukincome: { "yes": 5, "no": 0 },
+					age: { "0": 20, "28": 10, "30": 5, "33":0 }
+				}
+			},
+			r2: {
+				target: 75,
+				points:{
+					degree: { "none":0, "bachelors":0, "masters":35, "phd":50 },
+					income: { "16000":5, "18000":10, "20000":15, "23000":20, "26000":25, "29000":30, "32000":35, "35000":40, "40000":45 },
+					ukincome: { "yes": 5, "no": 0 },
+					age: { "0": 20, "28": 10, "30": 5, "33":0 }
+				}
+			},
+			r3: {
+				target: 75,
+				points:{
+					degree: { "none":0, "bachelors":30, "masters":35, "phd":50 },
+					income: { "25000":5, "30000":15, "35000":20, "40000":25, "50000":30, "55000":35, "65000":40, "75000":45, "150000":80 },
+					ukincome: { "yes": 5, "no": 0 },
+					age: { "0": 20, "28": 10, "30": 5, "33":0 }
+				}
+			},
+			r4: {
+				target: 80,
+				points:{
+					degree: { "none":0, "bachelors":30, "masters":35, "phd":50 },
+					income: { "25000":5, "30000":15, "35000":20, "40000":25, "50000":30, "55000":35, "65000":40, "75000":45, "150000":80 },
+					ukincome: { "yes": 5, "no": 0 },
+					age: { "0": 20, "28": 10, "30": 5, "33":0 }
+				}
+			}
+		};
+
+		// When fields in the form are changed, recalculate the result
+		$('form input, form select').on('change blur keyup', function() {
+
+			// Select the chosen rule set
+			var rules = rulesets[$('input[name=form_rules]:checked').val()];
+			var score = 0;
+			var val, this_score, matched_boundary;
+
+			if (rules) {
+				for (var field in rules.points) {
+
+					// Get the value of the field
+					var f = $('input[name=form_'+field+'], select[name=form_'+field+']');
+					if (f.length > 1) f = f.filter(':checked');
+					val = f.val();
+
+					// Normalise fields: turn year of birth into an age, remove non-numeric characters from income
+					if (field == 'age') val = ((new Date()).getYear()+1900) - val;
+					if (field == 'income') val = val.replace(/[^\d\.]/, '');
+
+					// Find the correct score - for numeric fields, match the smallest boundary that is larger than the value
+					this_score = 0;
+					matched_boundary = -1;
+					for (var boundary in rules.points[field]) {
+						if (boundary == val || (boundary.match(/^[\d.]+$/) && parseFloat(val, 10) > parseFloat(boundary, 10) && matched_boundary < boundary)) {
+							this_score = rules.points[field][boundary];
+							matched_boundary = boundary;
+						}
+					}
+					score += this_score;
+				}
+
+				// Show the appropriate result message
+				$('.results-msg').hide();
+				$('.results').show();
+				if (score >= rules.target) {
+					$('.results-msg-yes').show();
+				} else {
+					$('.results-msg-no').show();
+				}
+
+			// If no rule set is selected, don't show any results
+			} else {
+				$('.results').hide();
+			}
+		});
+
+		var year_opts = '<option></option>';
+		for (var i = (new Date()).getYear()+1900, s=i-100; i>s; i--) {
+			year_opts += '<option>'+i+'</option>';
+		}
+		$('#form_age').html(year_opts);
+	});
+	</script>
+
 </head>
 
 <!-- Give the page the standard FT page background color -->
@@ -43,8 +145,10 @@
 			<div class="o-ft-forms-field-group">
 
 				<!-- Style the radio buttons using FT forms style - gives a claret coloured dot, and larger, more touchable circles.  Also use labels so that you can click/touch the label as well as the dot.  Matching the ID of the radio input with the 'for' attribute of the label tells the browser which radio button each label relates to -->
-				<input type="radio" name='form_rules' value="2008" class="o-ft-forms__field" id="form_rules_2008"><label for="form_rules_2008" class="o-ft-forms__label"><span class="o-ft-forms__field--pseudo"></span>Rules from Feb 29, 2008 to Mar 30, 2009 (easier)</label><br/>
-				<input type="radio" name='form_rules' value="2010" class="o-ft-forms__field" id="form_rules_2010"><label for="form_rules_2010" class="o-ft-forms__label"><span class="o-ft-forms__field--pseudo"></span>Rules from Jul 10, 2010 to Dec 22, 2010 (harder)</label>
+				<input type="radio" name='form_rules' value="r1" class="o-ft-forms__field" id="form_rules_r1"><label for="form_rules_r1" class="o-ft-forms__label"><span class="o-ft-forms__field--pseudo"></span>Rules from Feb 29, 2008 to Mar 30, 2009 (easier)</label><br/>
+				<input type="radio" name='form_rules' value="r2" class="o-ft-forms__field" id="form_rules_r2"><label for="form_rules_r2" class="o-ft-forms__label"><span class="o-ft-forms__field--pseudo"></span>Rules from Mar 31, 2009 to Apr 5, 2010</label><br/>
+				<input type="radio" name='form_rules' value="r3" class="o-ft-forms__field" id="form_rules_r3"><label for="form_rules_r3" class="o-ft-forms__label"><span class="o-ft-forms__field--pseudo"></span>Rules from Apr 6, 2010 to Jul 19, 2010</label>
+				<input type="radio" name='form_rules' value="r4" class="o-ft-forms__field" id="form_rules_r4"><label for="form_rules_r4" class="o-ft-forms__label"><span class="o-ft-forms__field--pseudo"></span>Rules from Jul 20, 2010 to Dec 23, 2010 (harder)</label>
 			</div>
 		</div>
 	</div>
@@ -80,8 +184,8 @@
 		<div data-o-grid-colspan='5 S12' class='o-ft-forms__label'>Did you earn at least £16,000 <em>in the UK</em> over the last year?</div>
 		<div data-o-grid-colspan='7 S12'>
 			<div class="o-ft-forms-field-group">
-				<input type="radio" name='form_ukincome' value="Yes" class="o-ft-forms__field" id="form_ukincome_yes"><label for="form_ukincome_yes" class="o-ft-forms__label"><span class="o-ft-forms__field--pseudo"></span>Yes</label>
-				<input type="radio" name='form_ukincome' value="No" class="o-ft-forms__field" id="form_ukincome_no"><label for="form_ukincome_no" class="o-ft-forms__label"><span class="o-ft-forms__field--pseudo"></span>No</label>
+				<input type="radio" name='form_ukincome' value="yes" class="o-ft-forms__field" id="form_ukincome_yes"><label for="form_ukincome_yes" class="o-ft-forms__label"><span class="o-ft-forms__field--pseudo"></span>Yes</label>
+				<input type="radio" name='form_ukincome' value="no" class="o-ft-forms__field" id="form_ukincome_no"><label for="form_ukincome_no" class="o-ft-forms__label"><span class="o-ft-forms__field--pseudo"></span>No</label>
 			</div>
 		</div>
 	</div>
@@ -91,54 +195,20 @@
 		<div data-o-grid-colspan='5 S12' class='o-ft-forms__label'>What year were you born?</div>
 		<div data-o-grid-colspan='7 S12'>
 			<div class="o-ft-forms-field-group">
-				<select class="o-ft-forms__field--select" style='max-width: 150px'>
-				<option></option>
-				<option>2013</option>
-				<option>2012</option>
-				<option>2011</option>
-				<option>2010</option>
-				<option>2009</option>
-				<option>2008</option>
-				<option>2007</option>
-				<option>2006</option>
-				<option>2005</option>
-				<option>2004</option>
-				<option>2003</option>
-				<option>2002</option>
-				<option>2001</option>
-				<option>2000</option>
-				<option>1999</option>
-				<option>1998</option>
-				<option>1997</option>
-				<option>1996</option>
-				<option>1995</option>
-				<option>1994</option>
-				<option>1993</option>
-				<option>1992</option>
-				<option>1991</option>
-				<option>1990</option>
-				<option>1989</option>
-				<option>1988</option>
-				<option>1987</option>
-				<option>1986</option>
-				<option>1985</option>
-				<option>1984</option>
-				<option>1983</option>
-				<option>1982</option>
-				<option>1981</option>
-				<option>1980</option>
-				<option>1979</option>
-				</select>
+				<select class="o-ft-forms__field--select" name='form_age' id='form_age' style='max-width: 150px'></select>
 			</div>
 		</div>
 	</div>
 
 	</form>
 
-	<div class='o-grid-row' data-o-grid-colspan="12">
+	<div class='o-grid-row results' data-o-grid-colspan="12">
 		<h2 class='o-ft-typography-heading3'>Your results</h2>
-		<p class='o-ft-typography-body o-ft-typography-body__block'>
+		<p class='o-ft-typography-body o-ft-typography-body__block results-msg results-msg-yes'>
 			Congratulations! Provided you have spent the last five years in the UK, without any significant absences, you'd qualify to stay and settle in the UK!
+		</p>
+		<p class='o-ft-typography-body o-ft-typography-body__block results-msg results-msg-no'>
+			Oh dear! You would not qualify to settle in the UK.
 		</p>
 	</div>
 
