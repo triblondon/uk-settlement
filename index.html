@@ -1,12 +1,15 @@
-<html>
+<!DOCTYPE html>
+<html class='no-js'>
 <head>
 	<meta charset="utf-8">
+	<title>Could you qualify to stay in the UK as a Tier 1 highly skilled migrant? - FT Interactive</title>
 
 	<!-- Load the Grid, Typography, Forms and Colors style modules from Origami -->
 	<link rel='stylesheet' href='http://build.origami.ft.com/bundles/css?modules=o-grid@^2.1.4,o-ft-typography@^1.11.0,o-ft-forms@^0.6.7,o-colors@^2.3.11' />
 
-	<!-- Fix some bugs in Origami forms 0.6.7.  The prefix blocks (in this case, '£' on the income field) don't match the height of the text fields, and additional info doesn't have margins suitable for it to go *under* the field it relates to. -->
 	<style>
+
+		/* Fix some bugs in Origami forms 0.6.7.  The prefix blocks (in this case, '£' on the income field) don't match the height of the text fields, and additional info doesn't have margins suitable for it to go *under* the field it relates to. */
 		.o-ft-forms__prefix {
 			max-width: 30px;
 			float: left;
@@ -24,6 +27,11 @@
 			overflow: hidden;
 		}
 
+		/* Add some styles mandated by Origami spec */
+		.js .o--if-no-js { display: none !important; }
+		.no-js .o--if-js { display: none !important; }
+
+		/* Add some styles specific to this product */
 		.results, .results-msg {
 			display: none;
 		}
@@ -31,6 +39,7 @@
 
 	<script src='//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js'></script>
 	<script>
+	$('html').addClass('js').removeClass('no-js');
 	$(function() {
 		var rulesets = {
 			r1: {
